@@ -1,6 +1,7 @@
 package com.swiftype.android.search.backend;
 
 import java.util.Date;
+import java.util.Formatter;
 
 import org.json.JSONObject;
 
@@ -212,6 +213,12 @@ public class SearchService extends IntentService {
 						                                                   documentTypeConfig.getIdentifierField());
 				
 				for (final ContentValues row : resultRows) {
+					// Format price and title data here
+					if (row.getAsString("price") != "") {
+						Formatter priceFormatter = new Formatter();
+						row.put("price", priceFormatter.format("$%.2f", (float) Float.valueOf(row.getAsString("price"))).toString());
+						row.put("title", row.getAsString("title").split("·")[0].trim());
+					}
 					row.put(SwiftypeDbHelper.COLUMN_QUERY_HASH, queryHash);
 					row.put(SwiftypeDbHelper.COLUMN_TIMESTAMP, timestamp);
 				}
