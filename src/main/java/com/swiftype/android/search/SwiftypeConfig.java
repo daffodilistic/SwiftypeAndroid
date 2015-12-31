@@ -24,7 +24,7 @@ public class SwiftypeConfig {
 	private static int maxResultFieldLength;
 	private static int maxSuggestFieldLength;
 	private static String[] documentTypeNames;
-	
+
 	public SwiftypeConfig(final Resources resources) {
 		if (documentTypeNames == null) {
 			final String splitRegex = "\\s*,\\s*";
@@ -36,7 +36,7 @@ public class SwiftypeConfig {
 			
 			suggestColumns = resources.getStringArray(R.array.suggest_columns);
 			suggestResources = getResourceIds(resources, R.array.suggest_resources);
-			
+
 			if (suggestColumns.length != suggestResources.length) {
 				throw new IllegalArgumentException("Suggest columns and resources must have the same length.");
 			}
@@ -68,10 +68,10 @@ public class SwiftypeConfig {
 				final int[] displayResources = getResourceIds(resources, displayFieldResourceId);
 				
 				final String[] suggestDisplayFields = documentType.getString(fieldIndex++).split(splitRegex);
-				
+
 				if (suggestDisplayFields.length != suggestColumns.length) {
-						throw new IllegalArgumentException("Suggest display fields and columns must be the same length!");
-					}
+						//throw new IllegalArgumentException("Suggest display fields and columns must be the same length!");
+				}
 				
 				DocumentTypeConfig documentTypeConfig = new DocumentTypeConfig(name,
 																			   identifierField,
@@ -213,7 +213,11 @@ public class SwiftypeConfig {
 			projectionMap.put(SwiftypeDbHelper.COLUMN_ID, SwiftypeDbHelper.COLUMN_ID);
 			for (int i = 0; i < suggestDisplayFields.length; ++i) {
 				final String field = suggestDisplayFields[i];
-				projectionMap.put(field, field + " AS " + suggestColumns[i]);
+				if (i >= suggestColumns.length) {
+					projectionMap.put(field, field + " AS " + field);
+				} else {
+					projectionMap.put(field, field + " AS " + suggestColumns[i]);
+				}
 			}
 			for (final String field : SUGGEST_EXTRA_FIELDS) {
 				projectionMap.put(field, field + " AS " + field);

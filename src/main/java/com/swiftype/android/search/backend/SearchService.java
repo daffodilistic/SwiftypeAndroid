@@ -216,7 +216,8 @@ public class SearchService extends IntentService {
 					// Format price and title data here
 					if (row.getAsString("price") != "") {
 						Formatter priceFormatter = new Formatter();
-						row.put("price", priceFormatter.format("$%.2f", (float) Float.valueOf(row.getAsString("price"))).toString());
+						String priceText = priceFormatter.format("$%.2f %s", ((float) Float.valueOf(row.getAsString("price"))), row.getAsString("weight")).toString();
+						row.put("price", priceText);
 						row.put("title", row.getAsString("title").split("·")[0].trim());
 					}
 					row.put(SwiftypeDbHelper.COLUMN_QUERY_HASH, queryHash);
